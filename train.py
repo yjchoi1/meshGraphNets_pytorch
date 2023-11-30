@@ -7,16 +7,18 @@ from utils.utils import NodeType
 from torch_geometric.loader import DataLoader
 import torch_geometric.transforms as T
 
-dataset_dir = "/home/jlx/dataset/data"
-batch_size = 20
+dataset_dir = "/work2/08264/baagee/frontera/gns-meshnet-data/gns-data/datasets/pipe-h5/"
+batch_size = 2
 noise_std=2e-2
 
 print_batch = 10
-save_batch = 200
+save_batch = 1000
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 simulator = Simulator(message_passing_num=15, node_input_size=11, edge_input_size=3, device=device)
+train_state = torch.load("/work2/08264/baagee/frontera/meshnet/checkpoint/simulator.pth")
+simulator.load_checkpoint()
 optimizer= torch.optim.Adam(simulator.parameters(), lr=1e-4)
 print('Optimizer initialized')
 

@@ -23,7 +23,7 @@ parser.add_argument("--model_dir",
                     default='checkpoint/simulator.pth')
 
 parser.add_argument("--test_split", type=str, default='test')
-parser.add_argument("--rollout_num", type=int, default=1)
+parser.add_argument("--rollout_num", type=int, default=13)
 
 args = parser.parse_args()
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     simulator.load_checkpoint()
     simulator.eval()
 
-    dataset_dir = "/home/jlx/dataset/data"
+    dataset_dir = "/work2/08264/baagee/frontera/gns-meshnet-data/gns-data/datasets/pipe-h5/"
     dataset = FPC_ROLLOUT(dataset_dir, split=args.test_split)
     transformer = T.Compose([T.FaceToEdge(), T.Cartesian(norm=False), T.Distance(norm=False)])
     test_loader = DataLoader(dataset=dataset, batch_size=1)

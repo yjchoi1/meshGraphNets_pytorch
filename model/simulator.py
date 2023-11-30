@@ -30,9 +30,9 @@ class Simulator(nn.Module):
         one_hot = torch.nn.functional.one_hot(node_type, 9)
         node_feature.append(one_hot)
         node_feats = torch.cat(node_feature, dim=1)
-        attr = self._node_normalizer(node_feats, self.training)
+        normalized_node_feats = self._node_normalizer(node_feats, self.training)
 
-        return attr
+        return normalized_node_feats
 
     def velocity_to_accelation(self, noised_frames, next_velocity):
 

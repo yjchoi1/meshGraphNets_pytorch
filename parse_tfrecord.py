@@ -45,15 +45,17 @@ def load_dataset(path, split):
 
 
 if __name__ == '__main__':
-    tf.enable_resource_variables()
-    tf.enable_eager_execution()
+    tf.compat.v1.enable_resource_variables()
+    tf.compat.v1.enable_eager_execution()
 
-    tf_datasetPath='data/cylinder_flow'
-    os.makedirs('/mnt/Data/jlx/phygraph/datapkls/', exist_ok=True)
+    tf_datasetPath='/work2/08264/baagee/frontera/meshnet/data/cylinder_flow/'
+    h5_datasetPath='/work2/08264/baagee/frontera/meshnet/data/cylinder_flow_h5/'
+    os.makedirs(h5_datasetPath, exist_ok=True)
+
 
     for split in ['train', 'test', 'valid']:
         ds = load_dataset(tf_datasetPath, split)
-        save_path='/mnt/Data/jlx/phygraph/datapkls/'+ split  +'.h5'
+        save_path = h5_datasetPath+ split +'.h5'
         f = h5py.File(save_path, "w")
         print(save_path)
 
@@ -67,7 +69,7 @@ if __name__ == '__main__':
             # d = f.create_dataset(str(index), (len(data), ), dtype=pos.dtype)
             g = f.create_group(str(index))
             for k in data:
-             g[k] = eval(k)
-            
+                g[k] = eval(k)
+
             print(index)
         f.close()
