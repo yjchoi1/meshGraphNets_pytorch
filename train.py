@@ -43,7 +43,7 @@ def train(model:Simulator, dataloader, optimizer):
         optimizer.step()
 
         if batch_index % print_batch == 0:
-            print('batch %d [loss %.2e]'%(batch_index, loss.item()))
+            print('batch %d [loss %f]'%(batch_index, loss.item()))
 
         if batch_index % save_batch == 0:
             model.save_checkpoint()
