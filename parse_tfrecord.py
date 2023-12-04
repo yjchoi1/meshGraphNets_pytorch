@@ -48,8 +48,8 @@ if __name__ == '__main__':
     tf.compat.v1.enable_resource_variables()
     tf.compat.v1.enable_eager_execution()
 
-    tf_datasetPath='/work2/08264/baagee/frontera/meshnet/data/cylinder_flow/'
-    h5_datasetPath='/work2/08264/baagee/frontera/meshnet/data/cylinder_flow_h5/'
+    tf_datasetPath='/work2/08264/baagee/frontera/gns-meshnet-data/gns-data/datasets/pipe-tfrecord'
+    h5_datasetPath='/work2/08264/baagee/frontera/gns-meshnet-data/gns-data/datasets/pipe-h5/'
     os.makedirs(h5_datasetPath, exist_ok=True)
 
 
