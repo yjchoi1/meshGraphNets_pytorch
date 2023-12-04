@@ -16,7 +16,7 @@ save_batch = 1000
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-simulator = Simulator(message_passing_num=15, node_input_size=11, edge_input_size=3, device=device)
+simulator = Simulator(message_passing_num=10, node_input_size=11, edge_input_size=3, device=device)
 train_state = torch.load("/work2/08264/baagee/frontera/meshnet/checkpoint/simulator.pth")
 simulator.load_checkpoint()
 optimizer= torch.optim.Adam(simulator.parameters(), lr=1e-4)
