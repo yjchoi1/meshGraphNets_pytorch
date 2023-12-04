@@ -20,7 +20,7 @@ flags.DEFINE_string('model_file', None, help=('Model filename (.pt) to resume fr
 flags.DEFINE_string('train_state_file', None, help=('Train state filename (.pt) to resume from. Can also use "latest" to default to newest file.'))
 flags.DEFINE_integer('ntraining_steps', int(2E7), help='Number of training steps.')
 flags.DEFINE_integer('nsave_steps', int(5000), help='Number of steps at which to save the model.')
-flags.DEFINE_integer('nprint_steps', int(1), help='Number of steps at which to print the model.')
+flags.DEFINE_integer('nprint_steps', int(10), help='Number of steps at which to print the model.')
 
 # Learning rate parameters
 flags.DEFINE_float('lr_init', 1e-4, help='Initial learning rate.')
