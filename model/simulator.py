@@ -9,12 +9,11 @@ import os
 
 class Simulator(nn.Module):
 
-    def __init__(self, message_passing_num, node_input_size, edge_input_size, device, model_dir='checkpoint/simulator.pth') -> None:
+    def __init__(self, message_passing_num, node_input_size, edge_input_size, device) -> None:
         super(Simulator, self).__init__()
 
-        self.node_input_size =  node_input_size
+        self.node_input_size = node_input_size
         self.edge_input_size = edge_input_size
-        self.model_dir = model_dir
         self.model = EncoderProcesserDecoder(message_passing_num=message_passing_num, node_input_size=node_input_size, edge_input_size=edge_input_size).to(device)
         self._output_normalizer = normalization.Normalizer(size=2, name='output_normalizer', device=device)
         self._node_normalizer = normalization.Normalizer(size=node_input_size, name='node_normalizer', device=device)
@@ -88,10 +87,10 @@ class Simulator(nn.Module):
                 object = eval('self.'+k)
                 setattr(object, para, value)
 
+        print(f"Load model at {model_path}")
+
 
     def save_checkpoint(self, step, optimizer_state, savedir=None):
-        if savedir is None:
-            savedir=self.model_dir
 
         # Save model
         to_save_model = {
@@ -111,3 +110,5 @@ class Simulator(nn.Module):
         }
         torch.save(to_save_optimizer,
                    os.path.join(savedir, f'train_state-{step}.pt'))
+
+        print(f"Checkpoint saved in {savedir}")

@@ -19,7 +19,7 @@ flags.DEFINE_string('model_path', '/work2/08264/baagee/frontera/gns-meshnet-data
 flags.DEFINE_string('model_file', None, help=('Model filename (.pt) to resume from. Can also use "latest" to default to newest file.'))
 flags.DEFINE_string('train_state_file', None, help=('Train state filename (.pt) to resume from. Can also use "latest" to default to newest file.'))
 flags.DEFINE_integer('ntraining_steps', int(2E7), help='Number of training steps.')
-flags.DEFINE_integer('nsave_steps', int(5000), help='Number of steps at which to save the model.')
+flags.DEFINE_integer('nsave_steps', int(1000), help='Number of steps at which to save the model.')
 flags.DEFINE_integer('nprint_steps', int(10), help='Number of steps at which to print the model.')
 
 # Learning rate parameters
@@ -31,7 +31,7 @@ FLAGS = flags.FLAGS
 
 
 batch_size = 2
-noise_std=2e-2
+noise_std = 2e-2
 
 print_batch = 10
 save_batch = 1000
@@ -75,7 +75,7 @@ def train(simulator: Simulator, dataloader, optimizer):
             optimizer = torch.optim.Adam(simulator.parameters())
             optimizer.load_state_dict(train_state["optimizer_state"])
             # set global train state
-            step = train_state.pop["step"]
+            step = train_state.pop("step")
 
         else:
             msg = f'Specified model_file {FLAGS.model_path + FLAGS.model_file} and train_state_file {FLAGS.model_path + FLAGS.train_state_file} not found.'
@@ -105,7 +105,7 @@ def train(simulator: Simulator, dataloader, optimizer):
                 optimizer.step()
 
                 # Update learning rate
-                lr_new = FLAGS.lr_init * (FLAGS.lr_decay ** (step / FLAGS.lr_decay_steps))
+                lr_new = FLAGS.lr_init * (FLAGS.lr_decay ** (step / FLAGS.lr_decay_steps)) + 1e-6
                 for param in optimizer.param_groups:
                     param['lr'] = lr_new
 
