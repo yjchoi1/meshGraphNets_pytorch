@@ -9,12 +9,11 @@ import os
 
 class Simulator(nn.Module):
 
-    def __init__(self, message_passing_num, node_input_size, edge_input_size, device, model_dir='checkpoint/simulator.pth') -> None:
+    def __init__(self, message_passing_num, node_input_size, edge_input_size, device) -> None:
         super(Simulator, self).__init__()
 
-        self.node_input_size =  node_input_size
+        self.node_input_size = node_input_size
         self.edge_input_size = edge_input_size
-        self.model_dir = model_dir
         self.model = EncoderProcesserDecoder(message_passing_num=message_passing_num, node_input_size=node_input_size, edge_input_size=edge_input_size).to(device)
         self._output_normalizer = normalization.Normalizer(size=2, name='output_normalizer', device=device)
         self._node_normalizer = normalization.Normalizer(size=node_input_size, name='node_normalizer', device=device)
@@ -71,36 +70,45 @@ class Simulator(nn.Module):
 
             return predicted_velocity
 
-    def load_checkpoint(self, ckpdir=None):
-        
-        if ckpdir is None:
-            ckpdir = self.model_dir
-        dicts = torch.load(ckpdir)
-        self.load_state_dict(dicts['model'])
+    def load_checkpoint(self, model_path):
 
-        keys = list(dicts.keys())
+        # load model state
+        model_dicts = torch.load(model_path)
+        self.load_state_dict(model_dicts['model'])
+
+        # load train hyperparameters
+        keys = list(model_dicts.keys())
         keys.remove('model')
+        keys.remove('step')
 
         for k in keys:
-            v = dicts[k]
+            v = model_dicts[k]
             for para, value in v.items():
                 object = eval('self.'+k)
                 setattr(object, para, value)
 
-        print("Simulator model loaded checkpoint %s"%ckpdir)
+        print(f"Load model at {model_path}")
 
-    def save_checkpoint(self, savedir=None):
-        if savedir is None:
-            savedir=self.model_dir
 
-        os.makedirs(os.path.dirname(self.model_dir), exist_ok=True)
-        
-        model = self.state_dict()
-        _output_normalizer = self._output_normalizer.get_variable()
-        _node_normalizer  = self._node_normalizer.get_variable()
-        # _edge_normalizer = self._edge_normalizer.get_variable()
+    def save_checkpoint(self, step, optimizer_state, savedir=None):
 
-        to_save = {'model':model, '_output_normalizer':_output_normalizer, '_node_normalizer':_node_normalizer}
+        # Save model
+        to_save_model = {
+            'step': step,
+            'model': self.state_dict(),
+            '_output_normalizer': self._output_normalizer.get_variable(),
+            '_node_normalizer': self._node_normalizer.get_variable()
+            # _edge_normalizer = self._edge_normalizer.get_variable()
+        }
+        torch.save(to_save_model,
+                   os.path.join(savedir, f'model-{step}.pt'))
 
-        torch.save(to_save, savedir)
-        print('Simulator model saved at %s'%savedir)
+        # Save optimizer state
+        to_save_optimizer = {
+            'step': step,
+            'optimizer_state': optimizer_state,
+        }
+        torch.save(to_save_optimizer,
+                   os.path.join(savedir, f'train_state-{step}.pt'))
+
+        print(f"Checkpoint saved in {savedir}")
